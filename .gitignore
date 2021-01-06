@@ -5,7 +5,7 @@ dist/
 package-lock.json
 tmpoutput
 .history
-
+.idea/
 *.njsproj
 *.user
 *.orig
