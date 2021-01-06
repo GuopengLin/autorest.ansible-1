@@ -33,9 +33,9 @@ export async function processRequest(host: Host) {
 
         host.WriteFile("model4.yaml",serialize(session.model));
         let chooseModule = await host.GetValue("module");
-        let onlyList = await host.GetValue("list");
-        let debug = await host.GetValue("dump");
-        let codeModel = new AnsibleCodeModel(session.model, chooseModule, onlyList, Info, debug);
+        let listMode = await host.GetValue("list");
+        let dumpModel = await host.GetValue("dump");
+        let codeModel = new AnsibleCodeModel(session.model, chooseModule, listMode, Info);
         let skipDoc = await host.GetValue("skipDoc");
         let files = {};
         files = GenerateAll(codeModel, ArtifactType.ArtifactTypeAnsibleSdk, skipDoc);
@@ -43,7 +43,7 @@ export async function processRequest(host: Host) {
             Info(f);
             WriteFile(f, files[f]);
         }
-        if (debug){
+        if (dumpModel){
             let debugFiles = codeModel.DebugInfo;
             for (let f in debugFiles){
                 Info(f);

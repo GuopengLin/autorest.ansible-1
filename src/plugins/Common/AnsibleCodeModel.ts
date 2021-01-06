@@ -10,17 +10,16 @@ export class AnsibleCodeModel {
     public Modules: Module[] = [];
     public Tests: ModuleTest[] = [];
     private log: Function;
-    private DebugMode: boolean = false;
     public DebugInfo:any = {};
-    constructor(model: any, chooseModule: string, onlyList:boolean, log: Function, debug: boolean) {
+    constructor(model: any, chooseModule: string, listMode:boolean, log: Function) {
         this.model = model;
         this.log = log;
-        this.DebugMode = debug;
-        if (onlyList)
+        if (listMode)
             this.ListModule();
         else
             this.Init(chooseModule);
     }
+
     private ListModule(){
         for (let module of this.model.operationGroups) {
             this.log(module["$key"]);
@@ -47,14 +46,15 @@ export class AnsibleCodeModel {
 
             let test = new ModuleTest(mainModule.ModuleName, mainModule.ModuleMethods, mainModule.ObjectName);
             this.Tests.push(test);
-            if (this.DebugMode){
-
+            if (chooseModule != null){
                 let doc :any = {};
                 doc['api-spec'] = serialize(module);
                 doc['main-module'] = serialize(mainModule);
                 doc['info-module'] = serialize(infoModule);
                 doc['test'] = serialize(test);
-                this.DebugInfo[module["$key"]+".log"] = yaml.dump(doc);
+                this.DebugInfo[module["$key"]+"_raw_model.yaml"] = yaml.dump(module);
+                this.DebugInfo[module["$key"]+"_main_model.yaml"] = yaml.dump(mainModule);
+                this.DebugInfo[module["$key"]+"_info_model.yaml"] = yaml.dump(infoModule);
             }
 
         }
