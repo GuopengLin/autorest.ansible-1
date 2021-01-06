@@ -2,15 +2,20 @@
 
 import {Module} from "./Module";
 import {ModuleTest} from "./ModuleTest";
+import * as yaml from "node-yaml";
+import {serialize} from "@azure-tools/codegen";
 
 export class AnsibleCodeModel {
     private model: any = null;
     public Modules: Module[] = [];
     public Tests: ModuleTest[] = [];
     private log: Function;
-    constructor(model: any, chooseModule: string, onlyList:boolean, log: Function) {
+    private DebugMode: boolean = false;
+    public DebugInfo:any = {};
+    constructor(model: any, chooseModule: string, onlyList:boolean, log: Function, debug: boolean) {
         this.model = model;
         this.log = log;
+        this.DebugMode = debug;
         if (onlyList)
             this.ListModule();
         else
@@ -42,6 +47,15 @@ export class AnsibleCodeModel {
 
             let test = new ModuleTest(mainModule.ModuleName, mainModule.ModuleMethods, mainModule.ObjectName);
             this.Tests.push(test);
+            if (this.DebugMode){
+
+                let doc :any = {};
+                doc['api-spec'] = serialize(module);
+                doc['main-module'] = serialize(mainModule);
+                doc['info-module'] = serialize(infoModule);
+                doc['test'] = serialize(test);
+                this.DebugInfo[module["$key"]+".log"] = yaml.dump(doc);
+            }
 
         }
     }

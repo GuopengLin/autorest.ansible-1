@@ -188,3 +188,54 @@ I have to assume that you have konwn about how to use the autorest.ansible to ge
 If so, you can go to the next step.
 
 
+## Options
+
+#### 1. ansible-output-folder
+
+use ```--ansible-output-folder``` to choose the output dir
+
+example:
+```
+autorest --ansible --use=./  ../azure-rest-api-specs/specification/compute/resource-manager/readme.md   --ansible-output-folder=./tmp
+```
+
+#### 2. list
+
+use ```--list``` to list all the modules in a spec, which will be used in ```--module``` 
+
+example:
+
+```
+autorest --ansible --use=./  ../azure-rest-api-specs/specification/compute/resource-manager/readme.md   --ansible-output-folder=./tmp --list 
+```
+
+#### 3. module
+
+use ```--module=name_in_the_list``` to generate only one module 
+
+example:
+
+```
+autorest --ansible --use=./  ../azure-rest-api-specs/specification/compute/resource-manager/readme.md   --ansible-output-folder=./tmp  --module=Galleries
+```
+
+#### 4. skildoc
+
+use ```--skipDoc``` to skip the generation of docs in module files
+
+example:
+
+```
+autorest --ansible --use=./  ../azure-rest-api-specs/specification/compute/resource-manager/readme.md   --ansible-output-folder=./tmp --skipDoc
+```
+
+#### 5. dump
+
+use ```--dump``` to dump the generated module info for debuging, which could be used together with ```--module=name_in_the_list```
+
+example:
+
+```
+autorest --ansible --use=./  ../azure-rest-api-specs/specification/compute/resource-manager/readme.md   --ansible-output-folder=./tmp --dump --module=Galleries
+
+```
