@@ -16,7 +16,7 @@ import {
 } from "./AnsibleModuleCommon"
 import {Module} from "../Common/Module";
 
-export function GenerateModuleSdkInfo(module: Module, skipDoc: boolean) : string[] {
+export function GenerateModuleSdkInfo(module: Module, skipDoc: boolean, track2: boolean) : string[] {
 
     var output: string[] = [];
     if (!skipDoc){
@@ -85,8 +85,11 @@ export function GenerateModuleSdkInfo(module: Module, skipDoc: boolean) : string
         output.push("        response = None");
         output.push("");
         output.push("        try:");
-        ModuleGenerateApiCall(output, "            ", module, m.Name);
-        output.push("        except CloudError as e:");
+        ModuleGenerateApiCall(output, "            ", module, m.Name, track2);
+        if (!track2)
+            output.push("        except CloudError as e:");
+        else
+            output.push("        except azure.core.exceptions.ResourceNotFoundError as e:");
         output.push("            self.log('Could not get info for @(Model.ModuleOperationNameUpper).')");
         output.push("");
         output.push("        return response");

@@ -465,15 +465,17 @@ export function ModuleTopLevelOptionsVariables(options: ModuleOption[], useSdk: 
     return variables;
 }
 
-export function ModuleGenerateApiCall(output: string[], indent: string, module: Module, methodName: string): string[]
+export function ModuleGenerateApiCall(output: string[], indent: string, module: Module, methodName: string, track2: boolean): string[]
 {
     // XXX - ModuleOperationName
     let line: string = indent + "response = self.mgmt_client." + module.ModuleOperationName + "." + ToSnakeCase(methodName) + "(";
-    indent = Indent(line);
     let method: ModuleMethod = module.GetMethod(methodName);
 
     if (method != null)
     {
+        if (track2 && method.IsLongRunMethod)
+            line = indent + "response = self.mgmt_client." + module.ModuleOperationName + "." + "begin_"+ToSnakeCase(methodName) + "(";
+        indent = Indent(line);
         for (let option of method.Options)
         {
 

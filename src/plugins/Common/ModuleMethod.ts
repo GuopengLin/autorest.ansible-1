@@ -31,6 +31,8 @@ export class ModuleMethod {
             if (swaggerMethod.responses[0].schema.properties != null)
                 this.LoadResponseOption(swaggerMethod.responses[0].schema.properties);
         }
+        if (swaggerMethod.extensions != undefined && swaggerMethod.extensions['x-ms-long-running-operation'] != undefined)
+            this.IsLongRunMethod = swaggerMethod.extensions['x-ms-long-running-operation'];
     }
 
     private LoadOption(parameters: any){
@@ -74,6 +76,7 @@ export class ModuleMethod {
     public ResponseOptions: ModuleOption[] = [];
     public Url: string = "";
     public SwaggerMethod: any;
+    public IsLongRunMethod: boolean = false;
     public HttpMethod: string = "";
     public ApiVersion: string = "";
     public HasBody: boolean = false;

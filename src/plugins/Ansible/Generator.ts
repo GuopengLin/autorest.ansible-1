@@ -28,17 +28,16 @@ export async function processRequest(host: Host) {
         });
     }
     try {
-
         const session = await startSession<CodeModel>(host, {}, codeModelSchema);
-
         host.WriteFile("model4.yaml",serialize(session.model));
         let chooseModule = await host.GetValue("module");
         let listMode = await host.GetValue("list");
         let dumpModel = await host.GetValue("dump");
         let codeModel = new AnsibleCodeModel(session.model, chooseModule, listMode, Info);
         let skipDoc = await host.GetValue("skipDoc");
+        let track2 = await host.GetValue("track2");
         let files = {};
-        files = GenerateAll(codeModel, ArtifactType.ArtifactTypeAnsibleSdk, skipDoc);
+        files = GenerateAll(codeModel, ArtifactType.ArtifactTypeAnsibleSdk, skipDoc, track2);
         for (let f in files) {
             Info(f);
             WriteFile(f, files[f]);

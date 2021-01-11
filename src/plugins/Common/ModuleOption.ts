@@ -188,9 +188,7 @@ export class ModuleOption {
     public NamePythonSdk: string = null;
     public Kind:ModuleOptionKind;
     public SwaggerPath: string[]= [];
-    public Computed: boolean;
     public ElementType: string = null;
-    public SwaggerOption: any;
     public Parent: ModuleOption;
     public IsResponse: boolean;
     public OptionSet: Set<string>;

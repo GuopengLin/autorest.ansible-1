@@ -17,7 +17,7 @@ import {
 import { Indent } from "../../utils/helper";
 import {Module} from "../Common/Module";
 
-export function GenerateModuleSdk(module: Module, skipDoc: boolean) : string[] {
+export function GenerateModuleSdk(module: Module, skipDoc: boolean, track2: boolean) : string[] {
     
     var output: string[] = [];
     if (!skipDoc){
@@ -158,18 +158,21 @@ export function GenerateModuleSdk(module: Module, skipDoc: boolean) : string[] {
         output.push("        try:");
         if (module.HasCreateOrUpdate())
         {
-            ModuleGenerateApiCall(output, "            ", module, "create_or_update");
+            ModuleGenerateApiCall(output, "            ", module, "create_or_update", track2);
         }
         else
         {
             output.push("            if self.to_do == Actions.Create:");
-            ModuleGenerateApiCall(output, "                ", module, "create");
+            ModuleGenerateApiCall(output, "                ", module, "create", track2);
             output.push("            else:");
-            ModuleGenerateApiCall(output, "                ", module, "update");
+            ModuleGenerateApiCall(output, "                ", module, "update", track2);
         }
         output.push("            if isinstance(response, AzureOperationPoller) or isinstance(response, LROPoller):");
         output.push("                response = self.get_poller_result(response)");
-        output.push("        except CloudError as exc:");
+        if (!track2)
+            output.push("        except CloudError as exc:");
+        else
+            output.push("        except azure.core.exceptions.ResourceNotFoundError as e:");
         output.push("            self.log('Error attempting to create the " + module.ObjectName + " instance.')");
         output.push("            self.fail('Error creating the " + module.ObjectName + " instance: {0}'.format(str(exc)))");
         output.push("        return response.as_dict()");
@@ -179,9 +182,12 @@ export function GenerateModuleSdk(module: Module, skipDoc: boolean) : string[] {
         output.push("    def delete_resource(self):");
         output.push("        try:");
 
-        ModuleGenerateApiCall(output, "            ", module, "delete");
+        ModuleGenerateApiCall(output, "            ", module, "delete", track2);
 
-        output.push("        except CloudError as e:");
+        if (!track2)
+            output.push("        except CloudError as exc:");
+        else
+            output.push("        except azure.core.exceptions.ResourceNotFoundError as e:");
         output.push("            self.log('Error attempting to delete the " + module.ObjectName + " instance.')");
         output.push("            self.fail('Error deleting the " + module.ObjectName + " instance: {0}'.format(str(e)))");
         output.push("");
@@ -190,8 +196,11 @@ export function GenerateModuleSdk(module: Module, skipDoc: boolean) : string[] {
     }
     output.push("    def get_resource(self):");
     output.push("        try:");
-    ModuleGenerateApiCall(output, "            ", module, "get");
-    output.push("        except CloudError as e:");
+    ModuleGenerateApiCall(output, "            ", module, "get", track2);
+    if (!track2)
+        output.push("        except CloudError as exc:");
+    else
+        output.push("        except azure.core.exceptions.ResourceNotFoundError as e:");
     output.push("            return False");
     output.push("        return response.as_dict()");
     output.push("");
