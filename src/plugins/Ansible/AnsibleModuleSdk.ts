@@ -90,11 +90,13 @@ export function GenerateModuleSdk(module: Module, skipDoc: boolean) : string[] {
         if (locationDisposition == "/")
         {
             output.push("        if 'location' not in self.body:");
+            output.push("            resource_group = self.get_resource_group(self.resource_group)");
             output.push("            self.body['location'] = resource_group.location");
         }
         else
         {
             output.push("        if self.location is None:");
+            output.push("            resource_group = self.get_resource_group(self.resource_group)");
             output.push("            self.location = resource_group.location");
         }
         output.push("");
