@@ -48,7 +48,8 @@ export function AppendModuleDocumentation(output: string[], module: Module, isIn
         }
     }
     doc['module'] = moduleName;
-    doc['version_added'] = '2.9';
+    // hardcode to 1.3.1 at the moment
+    doc['version_added'] = '1.3.1';
 
     if (isInfoModule)
     {
@@ -483,6 +484,7 @@ export function ModuleGenerateApiCall(output: string[], indent: string, module: 
             // should use python name for lhs method parameters, currently NamePython is not set, using NameSwagger for the moment.
             if (line.endsWith("("))
             {
+                let swaggerNsame = option.NameSwagger
                 line += option.NameSwagger + "=self." + option.NameAnsible;
             }
             else
