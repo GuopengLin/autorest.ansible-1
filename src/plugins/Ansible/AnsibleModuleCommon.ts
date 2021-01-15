@@ -13,7 +13,7 @@ export function AppendModuleHeader(output: string[])
 {
     output.push("#!/usr/bin/python");
     output.push("#");
-    output.push("# Copyright (c) 2020 GuopengLin, (@t-glin)");
+    output.push("# Copyright (c) 2020 Microsoft");
     output.push("#");
     output.push("# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)");
     output.push("");
@@ -76,7 +76,7 @@ export function AppendModuleDocumentation(output: string[], module: Module, isIn
     {
         doc['extends_documentation_fragment'].push('azure_tags');
     }
-    doc['author'] = ['GuopengLin (@t-glin)'];
+    doc['author'] = ['Microsoft'];
     let s = yaml.dump(doc).split("\n");
     for (let i = 0; i < s.length;i++){
         let j = 0;
