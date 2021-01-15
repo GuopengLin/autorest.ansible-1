@@ -149,7 +149,7 @@ export function GenerateModuleSdk(module: Module, skipDoc: boolean) : string[] {
     output.push("        else:");
     output.push("            self.results['changed'] = False");
     output.push("            response = old_response");
-    output.push("            self.result['state'] = response");
+    output.push("            self.results['state'] = response");
     output.push("");
     output.push("        return self.results");
     output.push("");
