@@ -15,11 +15,12 @@ import {
     AppendInfoModuleLogic
 } from "./AnsibleModuleCommon"
 import {Module} from "../Common/Module";
+import {ansibleContext} from "./Generator";
 
-export function GenerateModuleSdkInfo(module: Module, skipDoc: boolean, track2: boolean) : string[] {
+export function GenerateModuleSdkInfo(module: Module) : string[] {
 
     var output: string[] = [];
-    if (!skipDoc){
+    if (!ansibleContext['skipDoc']){
         AppendModuleHeader(output);
         AppendModuleDocumentation(output, module, true, false);
         AppendModuleExamples(output, module, false);
@@ -85,8 +86,8 @@ export function GenerateModuleSdkInfo(module: Module, skipDoc: boolean, track2: 
         output.push("        response = None");
         output.push("");
         output.push("        try:");
-        ModuleGenerateApiCall(output, "            ", module, m.Name, track2);
-        if (!track2)
+        ModuleGenerateApiCall(output, "            ", module, m.Name);
+        if (!ansibleContext['track2'])
             output.push("        except CloudError as e:");
         else
             output.push("        except azure.core.exceptions.ResourceNotFoundError as e:");

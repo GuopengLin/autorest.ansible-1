@@ -3,6 +3,7 @@ import {AnsibleCodeModel} from "../Common/AnsibleCodeModel";
 import {GenerateModuleSdk} from "./AnsibleModuleSdk";
 import {GenerateModuleSdkInfo} from "./AnsibleModuleSdkInfo";
 import {GenerateTest} from "./AnsibleTest";
+import {ansibleContext} from "./Generator";
 
 
 export  enum ArtifactType {
@@ -11,7 +12,7 @@ export  enum ArtifactType {
 }
 
 
-export function GenerateAll(model:AnsibleCodeModel, type:ArtifactType, skipDoc: boolean, track2: boolean) {
+export function GenerateAll(model:AnsibleCodeModel, type:ArtifactType) {
     let modules = model.Modules;
     let tests = model.Tests;
     let files = {};
@@ -22,14 +23,14 @@ export function GenerateAll(model:AnsibleCodeModel, type:ArtifactType, skipDoc: 
             //     files[path+module.ModuleName+".py"] = GenerateModuleRestInfo(module, false);
             // }
             if (type == ArtifactType.ArtifactTypeAnsibleSdk){
-                files[path+module.ModuleName+".py"] = GenerateModuleSdkInfo(module, skipDoc, track2);
+                files[path+module.ModuleName+".py"] = GenerateModuleSdkInfo(module);
             }
         }else {
             // if (type == ArtifactType.ArtifactTypeAnsibleRest){
             //     files[path+module.ModuleName+".py"] = GenerateModuleRest(module, false);
             // }
             if (type == ArtifactType.ArtifactTypeAnsibleSdk){
-                files[path+module.ModuleName+".py"] = GenerateModuleSdk(module, skipDoc, track2);
+                files[path+module.ModuleName+".py"] = GenerateModuleSdk(module);
             }
         }
     }

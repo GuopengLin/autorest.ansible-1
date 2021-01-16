@@ -12,6 +12,7 @@ import {CodeModel, codeModelSchema} from "@azure-tools/codemodel";
 import {ArtifactType, GenerateAll} from "./AnsibleGenerator";
 import {serialize} from "@azure-tools/codegen";
 
+export var ansibleContext = {};
 
 export async function processRequest(host: Host) {
     const debug = await host.GetValue('debug') || false;
@@ -30,19 +31,25 @@ export async function processRequest(host: Host) {
     try {
         const session = await startSession<CodeModel>(host, {}, codeModelSchema);
         host.WriteFile("model4.yaml",serialize(session.model));
-        let chooseModule = await host.GetValue("module");
-        let listMode = await host.GetValue("list");
-        let dumpModel = await host.GetValue("dump");
-        let codeModel = new AnsibleCodeModel(session.model, chooseModule, listMode, Info);
-        let skipDoc = await host.GetValue("skipDoc");
-        let track2 = await host.GetValue("track2");
+        // let chooseModule = await host.GetValue("module");
+        // let listMode = await host.GetValue("list");
+        // let dumpModel = await host.GetValue("dump");
+        // let skipDoc = await host.GetValue("skipDoc");
+        // let track2 = await host.GetValue("track2");
+        ansibleContext['track2'] = await host.GetValue("track2");
+        ansibleContext['list'] = await host.GetValue("list");
+        ansibleContext['dump'] = await host.GetValue("dump");
+        ansibleContext['skipDoc'] = await host.GetValue("skipDoc");
+        ansibleContext['module'] = await host.GetValue("module");
+        let codeModel = new AnsibleCodeModel(session.model,  Info);
+
         let files = {};
-        files = GenerateAll(codeModel, ArtifactType.ArtifactTypeAnsibleSdk, skipDoc, track2);
+        files = GenerateAll(codeModel, ArtifactType.ArtifactTypeAnsibleSdk);
         for (let f in files) {
             Info(f);
             WriteFile(f, files[f]);
         }
-        if (dumpModel){
+        if (ansibleContext['dump']){
             let debugFiles = codeModel.DebugInfo;
             for (let f in debugFiles){
                 Info(f);

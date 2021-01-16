@@ -4,6 +4,7 @@ import {Module} from "./Module";
 import {ModuleTest} from "./ModuleTest";
 import * as yaml from "node-yaml";
 import {serialize} from "@azure-tools/codegen";
+import {ansibleContext} from "../Ansible/Generator";
 
 export class AnsibleCodeModel {
     private model: any = null;
@@ -11,13 +12,13 @@ export class AnsibleCodeModel {
     public Tests: ModuleTest[] = [];
     private log: Function;
     public DebugInfo:any = {};
-    constructor(model: any, chooseModule: string, listMode:boolean, log: Function) {
+    constructor(model: any,  log: Function) {
         this.model = model;
         this.log = log;
-        if (listMode)
+        if (ansibleContext['list'])
             this.ListModule();
         else
-            this.Init(chooseModule);
+            this.Init(ansibleContext['module']);
     }
 
     private ListModule(){

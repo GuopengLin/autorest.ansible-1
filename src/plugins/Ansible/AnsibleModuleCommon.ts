@@ -8,6 +8,7 @@ import {Module} from "../Common/Module";
 import {ModuleOption, ModuleOptionKind} from "../Common/ModuleOption";
 import {ModuleMethod} from "../Common/ModuleMethod";
 import * as yaml from "node-yaml";
+import {ansibleContext} from "./Generator";
 
 export function AppendModuleHeader(output: string[])
 {
@@ -106,8 +107,6 @@ export function AppendModuleExamples(output: string[], module: Module, isInfoMod
 
             });
         }
-
-
         output.push("");
     }
     output.push("'''");
@@ -465,7 +464,7 @@ export function ModuleTopLevelOptionsVariables(options: ModuleOption[], useSdk: 
     return variables;
 }
 
-export function ModuleGenerateApiCall(output: string[], indent: string, module: Module, methodName: string, track2: boolean): string[]
+export function ModuleGenerateApiCall(output: string[], indent: string, module: Module, methodName: string): string[]
 {
     // XXX - ModuleOperationName
     let line: string = indent + "response = self.mgmt_client." + module.ModuleOperationName + "." + ToSnakeCase(methodName) + "(";
@@ -473,7 +472,7 @@ export function ModuleGenerateApiCall(output: string[], indent: string, module: 
 
     if (method != null)
     {
-        if (track2 && method.IsLongRunMethod)
+        if (ansibleContext['track2'] && method.IsLongRunMethod)
             line = indent + "response = self.mgmt_client." + module.ModuleOperationName + "." + "begin_"+ToSnakeCase(methodName) + "(";
         indent = Indent(line);
         for (let option of method.Options)

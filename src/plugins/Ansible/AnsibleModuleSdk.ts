@@ -16,11 +16,12 @@ import {
 } from "./AnsibleModuleCommon"
 import { Indent } from "../../utils/helper";
 import {Module} from "../Common/Module";
+import {ansibleContext} from "./Generator";
 
-export function GenerateModuleSdk(module: Module, skipDoc: boolean, track2: boolean) : string[] {
+export function GenerateModuleSdk(module: Module) : string[] {
     
     var output: string[] = [];
-    if (!skipDoc){
+    if (!ansibleContext['skipDoc']){
         AppendModuleHeader(output);
         AppendModuleDocumentation(output, module, false, false);
         AppendModuleExamples(output, module, false);
@@ -158,18 +159,18 @@ export function GenerateModuleSdk(module: Module, skipDoc: boolean, track2: bool
         output.push("        try:");
         if (module.HasCreateOrUpdate())
         {
-            ModuleGenerateApiCall(output, "            ", module, "create_or_update", track2);
+            ModuleGenerateApiCall(output, "            ", module, "create_or_update");
         }
         else
         {
             output.push("            if self.to_do == Actions.Create:");
-            ModuleGenerateApiCall(output, "                ", module, "create", track2);
+            ModuleGenerateApiCall(output, "                ", module, "create");
             output.push("            else:");
-            ModuleGenerateApiCall(output, "                ", module, "update", track2);
+            ModuleGenerateApiCall(output, "                ", module, "update");
         }
         output.push("            if isinstance(response, AzureOperationPoller) or isinstance(response, LROPoller):");
         output.push("                response = self.get_poller_result(response)");
-        if (!track2)
+        if (!ansibleContext['track2'])
             output.push("        except CloudError as exc:");
         else
             output.push("        except azure.core.exceptions.ResourceNotFoundError as e:");
@@ -182,9 +183,9 @@ export function GenerateModuleSdk(module: Module, skipDoc: boolean, track2: bool
         output.push("    def delete_resource(self):");
         output.push("        try:");
 
-        ModuleGenerateApiCall(output, "            ", module, "delete", track2);
+        ModuleGenerateApiCall(output, "            ", module, "delete");
 
-        if (!track2)
+        if (!ansibleContext['track2'])
             output.push("        except CloudError as exc:");
         else
             output.push("        except azure.core.exceptions.ResourceNotFoundError as e:");
@@ -196,8 +197,8 @@ export function GenerateModuleSdk(module: Module, skipDoc: boolean, track2: bool
     }
     output.push("    def get_resource(self):");
     output.push("        try:");
-    ModuleGenerateApiCall(output, "            ", module, "get", track2);
-    if (!track2)
+    ModuleGenerateApiCall(output, "            ", module, "get");
+    if (!ansibleContext['track2'])
         output.push("        except CloudError as exc:");
     else
         output.push("        except azure.core.exceptions.ResourceNotFoundError as e:");
