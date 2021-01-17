@@ -33,6 +33,7 @@ export class ModuleOption {
         if (this.NameAnsible == ToSnakeCase(this.ModuleObjectName)+"_name")
             this.NameAnsible = "name";
         this.NameSwagger = this.Name;
+        this.GetDisposition();
         this.Required = swaggerOption.required != undefined ? swaggerOption.required : false;
         this.Documentation = swaggerOption.language.default.description;
         this.IncludeInDocumentation = true;
@@ -100,9 +101,9 @@ export class ModuleOption {
             } else if (location == "path") {
                 this.Kind = ModuleOptionKind.MODULE_OPTION_PATH;
                 this.IncludeInArgSpec = true;
+
             } else if (location == "body") {
                 this.Kind = ModuleOptionKind.MODULE_OPTION_BODY;
-                this.GetDisposition();
                 this.IncludeInArgSpec = true;
             } else if (location == "header") {
                 this.Kind = ModuleOptionKind.MODULE_OPTION_HEADER;

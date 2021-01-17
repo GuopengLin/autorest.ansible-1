@@ -483,13 +483,13 @@ export function ModuleGenerateApiCall(output: string[], indent: string, module: 
 
             if (line.endsWith("("))
             {
-                line += option.NameAnsible + "=self." + option.NameAnsible;
+                line += option.NameSwagger + "=self." + option.NameAnsible;
             }
             else
             {
                 line += ",";
                 output.push(line);
-                line = indent + option.NameAnsible + "=self." + option.NameAnsible;
+                line = indent + option.NameSwagger + "=self." + option.NameAnsible;
             }
         }
         if (method.HasBody){

@@ -33,6 +33,8 @@ export function GenerateModuleSdk(module: Module) : string[] {
     output.push("    from msrestazure.azure_exceptions import CloudError");
     output.push("    from " + module.PythonNamespace + " import " + module.PythonMgmtClient + "");
     output.push("    from msrestazure.azure_operation import AzureOperationPoller");
+    if (ansibleContext['track2'])
+        output.push("    from azure.core.exceptions import ResourceNotFoundError");
     output.push("    from msrest.polling import LROPoller");
     output.push("except ImportError:");
     output.push("    # This is handled in azure_rm_common");
@@ -173,7 +175,7 @@ export function GenerateModuleSdk(module: Module) : string[] {
         if (!ansibleContext['track2'])
             output.push("        except CloudError as exc:");
         else
-            output.push("        except azure.core.exceptions.ResourceNotFoundError as e:");
+            output.push("        except ResourceNotFoundError as e:");
         output.push("            self.log('Error attempting to create the " + module.ObjectName + " instance.')");
         output.push("            self.fail('Error creating the " + module.ObjectName + " instance: {0}'.format(str(exc)))");
         output.push("        return response.as_dict()");
@@ -188,7 +190,7 @@ export function GenerateModuleSdk(module: Module) : string[] {
         if (!ansibleContext['track2'])
             output.push("        except CloudError as exc:");
         else
-            output.push("        except azure.core.exceptions.ResourceNotFoundError as e:");
+            output.push("        except ResourceNotFoundError as e:");
         output.push("            self.log('Error attempting to delete the " + module.ObjectName + " instance.')");
         output.push("            self.fail('Error deleting the " + module.ObjectName + " instance: {0}'.format(str(e)))");
         output.push("");
@@ -201,7 +203,7 @@ export function GenerateModuleSdk(module: Module) : string[] {
     if (!ansibleContext['track2'])
         output.push("        except CloudError as exc:");
     else
-        output.push("        except azure.core.exceptions.ResourceNotFoundError as e:");
+        output.push("        except ResourceNotFoundError as e:");
     output.push("            return False");
     output.push("        return response.as_dict()");
     output.push("");

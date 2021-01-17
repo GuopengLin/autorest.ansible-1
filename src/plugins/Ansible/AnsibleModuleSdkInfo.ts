@@ -33,6 +33,8 @@ export function GenerateModuleSdkInfo(module: Module) : string[] {
     output.push("    from msrestazure.azure_exceptions import CloudError");
     output.push("    from " + module.PythonNamespace + " import " + module.PythonMgmtClient + "");
     output.push("    from msrestazure.azure_operation import AzureOperationPoller");
+    if (ansibleContext['track2'])
+        output.push("    from azure.core.exceptions import ResourceNotFoundError");
     output.push("    from msrest.polling import LROPoller");
     output.push("except ImportError:");
     output.push("    # This is handled in azure_rm_common");
@@ -90,7 +92,7 @@ export function GenerateModuleSdkInfo(module: Module) : string[] {
         if (!ansibleContext['track2'])
             output.push("        except CloudError as e:");
         else
-            output.push("        except azure.core.exceptions.ResourceNotFoundError as e:");
+            output.push("        except ResourceNotFoundError as e:");
         output.push("            self.log('Could not get info for @(Model.ModuleOperationNameUpper).')");
         output.push("");
         output.push("        return response");
