@@ -194,15 +194,26 @@ Ultimatelly speacking, It is this storng similarity among the ansible modules mo
 ## 3. The composing rules
 
 
-## 4. Futue works
+## 4. Future works
 
 Although this code generator can already genearte some working ansible modules without futhuer modification. There're still lots of things we can
 do to improve the quality of this codegen and enrich the features it provide to comunity users. Some of the high value work items are listed below.
 
 ### using template
 
-Introducting an template engine 
+Introdcing an template engine let the ansible code generator trully adopt the tempalte-rendering patern in the code genering
+phrase. There are several obvious benifits of doing this, including:
+
+    * more clean and concise code. Since python has an strict rule for indenting code, the line-by
+    * easy for testing. Since we seperate the "view" from the "model", we can test the "view" and "model" seperately.
+    * less error-prone. Since python has a very strict rule for indenting code, using the line-by-line printing way is by naure error-prone.
+
 ### track2 python sdk support
+
+There're are two styles of python sdks: track1 and track2 sdk. The two versions of sdks are not campatiable with each other. Track2 sdk is a newer one
+and will be the only sdk released in future. Azure ansible modules heavily rely on the underlie auzre python sdks. Currently the python sdks used by azure ansible modules are
+all track1 sdks. So currently the ansible python modules suppose that the track1 sdk is used. So we need to support generating track2 sdk as well and add an commandline option
+to let the user switch between generating track1 and track2 python sdk compatiable ansible module.
 
 ### divide extention to fine-grained plugins
 
