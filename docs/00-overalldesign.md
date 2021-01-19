@@ -1,9 +1,38 @@
 # Introduction
+
 Ansible Code Generator is an autorest extention used to generate azure ansible modules. To understand how it works, you may first go through the main autorest
-doc. This doc is mainly for azure ansible community users who are interestd in contributing to the ansible code generator.
+doc to get familir with conectps like Extention, plugin, jsonrpc, codeModel, etc. The main purpose of this code generator is to faciliate the developing of new ansible modules,
+Which means we don't guarantee that the generated ansible module is bug free and ready to run. Neverthless, our testing shows that some of the generated modules can
+be executed directly.
+
+
+```
+----------------        `    ------------------    ---------------     ---------------    -------------------
+| swagger spec | -> .... -> |  modeler four   | ->  |  cli/common | -> | python/namer| -> | ansible-codegen |
+----------------             ------------------    ---------------     ---------------    -------------------
+```
+
+This code generator compose serveral autorest extentions via the pipline mechanisms provided by autorest core, as the above ascii pic dipicted. 
+The direct input of ansible-codegen is the codeModel emitted from python/namer. Internally, the received codeModel from python/namer will be further 
+transformed and enriched into a new codeMdole (ansible codeModel). The final step is to use anible codeModel rendering a pre defined "ansible module" template 
+to finish the whole code generating process. Using the terms "template" and "rendering" might be a little mis-leading here. The current implementation still
+print the generated code line by line to the output file. But it is quite easy to change the current implementation to a template based solution, and the
+template-rendering paradigam will be much more clear when describing the way this code generator works. 
 
 
 ## 1. Ansible module structure
+
+Most of the python sdk based ansible modules in the azcollection shares quite similar structure. The majority of the modules consists of:
+
+* a header section
+* followed by a documentation section
+* followed by an examples section
+* followed by a return section
+* followed by common import section
+* followed by a Actions definition
+* followed by the module class definition. And the internal structure of the module classes are also quite similar, I'll not expand and describe
+  them all. Instead, the following template-like module file will give you a good sense of the patterns look like. 
+
 
 ```
 #!/usr/bin/python
@@ -155,25 +184,26 @@ if __name__ == '__main__':
     main()
 
 ```
-## 2. The pipeline
 
-```
-----------------        `    ------------------    ---------------     ---------------    -------------------
-| swagger spec | -> .... -> |  modular four   | ->  |  cli/common | -> | python/namer| -> | ansible-codegen |
-----------------             ------------------    ---------------     ---------------    -------------------
-```
+Ultimatelly speacking, It is this storng similarity among the ansible modules motiveated us start writing this code geneartor.
+
+## 2. Ansible code model
 
 
 
-## 3. Ansible code model
-
-## 4. The composing rules
+## 3. The composing rules
 
 
-## 5. Futue works
+## 4. Futue works
+
+Although this code generator can already genearte some working ansible modules without futhuer modification. There're still lots of things we can
+do to improve the quality of this codegen and enrich the features it provide to comunity users. Some of the high value work items are listed below.
 
 ### using template
 
+Introducting an template engine 
 ### track2 python sdk support
 
 ### divide extention to fine-grained plugins
+
+### adding an ansible/namer plugin
