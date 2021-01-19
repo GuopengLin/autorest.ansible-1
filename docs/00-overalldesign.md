@@ -1,8 +1,8 @@
 # Introduction
 
-Ansible Code Generator is an autorest extention used to generate azure ansible modules. To understand how it works, you may first go through the main autorest
-doc to get familir with conectps like Extention, plugin, jsonrpc, codeModel, etc. The main purpose of this code generator is to faciliate the developing of new ansible modules,
-Which means we don't guarantee that the generated ansible module is bug free and ready to run. Neverthless, our testing shows that some of the generated modules can
+Ansible Code Generator is an autorest extension used to generate azure ansible modules. To understand how it works, you may first go through the main autorest
+doc to get familiar with concepts like Extention, plugin, jsonrpc, codeModel, etc. The main purpose of this code generator is to faciliate the development of new ansible modules,
+This means we don't guarantee that the generated ansible module is bug-free and ready to run. Nevertheless, our testing shows that some of the generated modules can
 be executed directly.
 
 
@@ -12,12 +12,12 @@ be executed directly.
 ----------------             ------------------    ---------------     ---------------    -------------------
 ```
 
-This code generator compose serveral autorest extentions via the pipline mechanisms provided by autorest core, as the above ascii pic dipicted. 
-The direct input of ansible-codegen is the codeModel emitted from python/namer. Internally, the received codeModel from python/namer will be further 
-transformed and enriched into a new codeMdole (ansible codeModel). The final step is to use anible codeModel rendering a pre defined "ansible module" template 
-to finish the whole code generating process. Using the terms "template" and "rendering" might be a little mis-leading here. The current implementation still
-print the generated code line by line to the output file. But it is quite easy to change the current implementation to a template based solution, and the
-template-rendering paradigam will be much more clear when describing the way this code generator works. 
+This code generator composes several autorest extensions via the pipeline mechanisms provided by autorest core, as the above ASCII pic depicted. 
+The direct input of ansible-codegen is the codeModel emitted from python/namer. Internally, the received codeModel will be further 
+transformed and enriched into a new codeMdole (ansible codeModel). The final step is to use the ansible codeModel rendering a pre-defined "ansible module" template 
+to generate the ansible module. Using the terms "template" and "rendering" might be a little misleading here. The current implementation still
+prints the generated code line by line to the output file. In essence, the printing-line-by-line way and template-rendering way is the same thing. But using the template-rendering paradigm
+to describe how the code generator works will let the audience easily to understand.
 
 
 ## 1. Ansible module structure
