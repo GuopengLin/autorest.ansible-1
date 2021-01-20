@@ -218,9 +218,12 @@ to let the user switch between generating track1 and track2 python sdk compatiab
 
 ### customization support via directives
 
-At first, Let's see an example where customization is requried. Using the current implementation, We'll generate a working ansible module to manage dns record set. But the generated
-python file will be named as ```auzre_rm_recordset.py``` rather than ```azure_rm_dnsrecordset.py```. Incluing the "rp name" as part of the output file name is not a fixing rule. For
-resources under compute, this rule should not be applied. An ```overides```` directive can be used to support this type of customization:
+Using the current codegen We can generate a working ansible module to manage dns record set. But the generated
+python file is named as ```auzre_rm_recordset.py``` rather than ```azure_rm_dnsrecordset.py```, which is required by the naming convention of azure ansible convention.
+Incluing the "rp name" as part of the output file name, is not a fixing rule. For example, when generating resources under ```compute```, this rule should not be applied.  
+To solve the "per rp conventions" issue, the codegen should support "the per configuration". uaually, as other autorest based codegen already did, it will be done by adding
+per codegen directives into the readme.md file under the spec directory. For example, an overrides directive coulde be added like the following to rename ```azure_rm_recordset.py```
+to ```azure_rm_dnsrecordset.py```.
 
 ``` yaml $(ansible))
 overides:
@@ -230,4 +233,4 @@ overides:
         ansibleName: DnsRecordSet
 ```
 
-Directives is not supported yet, we need to first enable customization via directives and then gradually add useful directive in a on-demand way.
+
