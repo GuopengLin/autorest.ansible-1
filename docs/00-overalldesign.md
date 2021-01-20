@@ -215,6 +215,19 @@ and will be the only sdk released in future. Azure ansible modules heavily rely 
 all track1 sdks. So currently the ansible python modules suppose that the track1 sdk is used. So we need to support generating track2 sdk as well and add an commandline option
 to let the user switch between generating track1 and track2 python sdk compatiable ansible module.
 
-### divide extention to fine-grained plugins
 
-### adding an ansible/namer plugin
+### customization support via directives
+
+At first, Let's see an example where customization is requried. Using the current implementation, We'll generate a working ansible module to manage dns record set. But the generated
+python file will be named as ```auzre_rm_recordset.py``` rather than ```azure_rm_dnsrecordset.py```. Incluing the "rp name" as part of the output file name is not a fixing rule. For
+resources under compute, this rule should not be applied. An ```overides```` directive can be used to support this type of customization:
+
+``` yaml $(ansible))
+overides:
+    - where:
+        resourceName: RecordSet
+    - set:
+        ansibleName: DnsRecordSet
+```
+
+Directives is not supported yet, we need to first enable customization via directives and then gradually add useful directive in a on-demand way.
