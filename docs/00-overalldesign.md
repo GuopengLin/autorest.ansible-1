@@ -185,14 +185,77 @@ if __name__ == '__main__':
 
 ```
 
-Ultimatelly speacking, It is this storng similarity among the ansible modules motiveated us start writing this code geneartor.
+It is actually the strong similarites among ansible modules justify the feasibility of writing an ansible codegen. And follow the same logic,
+we can use one sentence to roughly describe how this codegen works:
+  **Firstly transform and enrich the codeModel emittted by autorest python autorest extension into a container class called AnsibleCodeModel, then using the
+  information contains in the Module class composing the variable part of the pre-defined ansible module template.**
 
-## 2. Ansible code model
+To be specific, the composing parts include:
+
+  * composing the module documentation and argument spec
+  * composing the service client
+  * composing the module return 
+  * composing the crud methods in module
+
+## 2. The Ansible CodeModel
+
+See [here](../src/plugins/Common/Module.ts)
 
 
+## 3. The composing logic
 
-## 3. The composing rules
+### 3.1 composing the module documentation
 
+### 3.2 composing the service client
+
+```
+output.push("        self.mgmt_client = self.get_mgmt_svc_client(" + module.PythonMgmtClient + ",");
+    output.push("                                                    base_url=self._cloud_environment.endpoints.resource_manager,");
+    output.push("                                                    api_version='"+module.ModuleApiVersion+"')");
+```
+
+See [here](https://github.com/ansible-collections/azure/blob/dev/plugins/module_utils/azure_rm_common.py#L850) for the implementation of **get_mgmt_svc_client**
+
+### 3.3 composing the crud methods
+
+```
+export function ModuleGenerateApiCall(output: string[], indent: string, module: Module, methodName: string): string[]
+{
+    // XXX - ModuleOperationName
+    let line: string = indent + "response = self.mgmt_client." + module.ModuleOperationName + "." + ToSnakeCase(methodName) + "(";
+    indent = Indent(line);
+    let method: ModuleMethod = module.GetMethod(methodName);
+
+    if (method != null)
+    {
+        for (let option of method.Options)
+        {
+
+            if (option.Kind == ModuleOptionKind.MODULE_OPTION_BODY)
+                continue;
+
+            // should use python name for lhs method parameters, currently NamePython is not set, using NameSwagger for the moment.
+            if (line.endsWith("("))
+            {
+                let swaggerNsame = option.NameSwagger
+                line += option.NameSwagger + "=self." + option.NameAnsible;
+            }
+            else
+            {
+                line += ",";
+                output.push(line);
+                line = indent + option.NameSwagger + "=self." + option.NameAnsible;
+            }
+        }
+        if (method.HasBody){
+            line += ",";
+            output.push(line);
+            line = indent + method.ParameterName + "=self.body";
+        }
+    }
+    line += ")";
+    output.push(line);
+````
 
 ## 4. Future works
 
