@@ -24,7 +24,7 @@ to describe how the code generator works will let the audience easily to underst
 
 Most of the python sdk based ansible modules in the azcollection shares quite similar structure. The majority of the modules consists of:
 
-* a header section
+* begins with a header section
 * followed by a documentation section
 * followed by an examples section
 * followed by a return section
@@ -32,7 +32,7 @@ Most of the python sdk based ansible modules in the azcollection shares quite si
 * followed by a Actions definition
 * followed by the module class definition. And the internal structure of the module classes are also quite similar, I'll not expand and describe
   them all. Instead, the following template-like module file will give you a good sense of the patterns look like. 
-
+* ends with a __main__ section
 
 ```
 #!/usr/bin/python
@@ -187,8 +187,9 @@ if __name__ == '__main__':
 
 It is actually the strong similarites among ansible modules justify the feasibility of writing an ansible codegen. And follow the same logic,
 we can use one sentence to roughly describe how this codegen works:
+
   **Firstly transform and enrich the codeModel emittted by autorest python autorest extension into a container class called AnsibleCodeModel, then using the
-  information contains in the Module class composing the variable part of the pre-defined ansible module template.**
+  information contains in the AnsibleCodeModel composing the dynamic part of the pre-defined ansible module template.**
 
 To be specific, the composing parts include:
 
@@ -204,7 +205,9 @@ See [here](../src/plugins/Common/Module.ts)
 
 ## 3. The composing logic
 
-### 3.1 composing the module documentation
+### 3.1 composing the module documentation and arguspec
+
+see [here](../src/plugins/Ansible/AnsibleModuleCommon.ts#278)
 
 ### 3.2 composing the service client
 
@@ -217,6 +220,35 @@ output.push("        self.mgmt_client = self.get_mgmt_svc_client(" + module.Pyth
 See [here](https://github.com/ansible-collections/azure/blob/dev/plugins/module_utils/azure_rm_common.py#L850) for the implementation of **get_mgmt_svc_client**
 
 ### 3.3 composing the crud methods
+
+The following two snippets pretty much self-explains how to composing the "create and update" method call. See [here] (../src/plugins/Ansible/AnsibleModuleSdk.ts)
+for details.
+
+```
+    if (module.GetMethod('create_or_update') != null || module.GetMethod('create') != null){
+        output.push("    def create_update_resource(self):");
+        output.push("        try:");
+        if (module.HasCreateOrUpdate())
+        {
+            ModuleGenerateApiCall(output, "            ", module, "create_or_update");
+        }
+        else
+        {
+            output.push("            if self.to_do == Actions.Create:");
+            ModuleGenerateApiCall(output, "                ", module, "create");
+            output.push("            else:");
+            ModuleGenerateApiCall(output, "                ", module, "update");
+        }
+        output.push("            if isinstance(response, AzureOperationPoller) or isinstance(response, LROPoller):");
+        output.push("                response = self.get_poller_result(response)");
+        output.push("        except CloudError as exc:");
+        output.push("            self.log('Error attempting to create the " + module.ObjectName + " instance.')");
+        output.push("            self.fail('Error creating the " + module.ObjectName + " instance: {0}'.format(str(exc)))");
+        output.push("        return response.as_dict()");
+        output.push("");
+    }
+```
+
 
 ```
 export function ModuleGenerateApiCall(output: string[], indent: string, module: Module, methodName: string): string[]
