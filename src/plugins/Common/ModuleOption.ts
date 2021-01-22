@@ -82,7 +82,7 @@ export class ModuleOption {
             this.ReadOnly = readOnly;
         }
 
-        if (schema.type == SwaggerModelType.SWAGGER_MODEL_ENUM){
+        if (schema.type == SwaggerModelType.SWAGGER_MODEL_CHOICE || schema.type == SwaggerModelType.SWAGGER_MODEL_SEALED_CHOICE){
             for (let choice of schema.choices){
                 this.EnumValues.push(choice.value);
             }
@@ -148,7 +148,7 @@ export class ModuleOption {
             return 'int';
         if (type == SwaggerModelType.SWAGGER_MODEL_OBJECT || type == SwaggerModelType.SWAGGER_MODEL_DICTIONARY)
             return 'dict';
-        if (type == SwaggerModelType.SWAGGER_MODEL_ENUM)
+        if (type == SwaggerModelType.SWAGGER_MODEL_CHOICE || type == SwaggerModelType.SWAGGER_MODEL_SEALED_CHOICE)
             return 'str';
         if (type == SwaggerModelType.SWAGGER_MODEL_DURATION)
             return 'str';

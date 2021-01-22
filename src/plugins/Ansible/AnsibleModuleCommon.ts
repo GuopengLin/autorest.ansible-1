@@ -14,7 +14,7 @@ export function AppendModuleHeader(output: string[])
 {
     output.push("#!/usr/bin/python");
     output.push("#");
-    output.push("# Copyright (c) 2020 GuopengLin, (@t-glin)");
+    output.push("# Copyright (c) 2020 Microsoft");
     output.push("#");
     output.push("# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)");
     output.push("");
@@ -49,7 +49,8 @@ export function AppendModuleDocumentation(output: string[], module: Module, isIn
         }
     }
     doc['module'] = moduleName;
-    doc['version_added'] = '2.9';
+    // hardcode to 1.3.1 at the moment
+    doc['version_added'] = '1.3.1';
 
     if (isInfoModule)
     {
@@ -76,7 +77,7 @@ export function AppendModuleDocumentation(output: string[], module: Module, isIn
     {
         doc['extends_documentation_fragment'].push('azure_tags');
     }
-    doc['author'] = ['GuopengLin (@t-glin)'];
+    doc['author'] = ['Microsoft'];
     let s = yaml.dump(doc).split("\n");
     for (let i = 0; i < s.length;i++){
         let j = 0;
@@ -481,6 +482,7 @@ export function ModuleGenerateApiCall(output: string[], indent: string, module: 
             if (option.Kind == ModuleOptionKind.MODULE_OPTION_BODY)
                 continue;
 
+            // should use python name for lhs method parameters, currently NamePython is not set, using NameSwagger for the moment.
             if (line.endsWith("("))
             {
                 line += option.NameSwagger + "=self." + option.NameAnsible;

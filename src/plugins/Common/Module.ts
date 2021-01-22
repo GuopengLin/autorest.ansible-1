@@ -175,7 +175,7 @@ export class Module {
     public ModuleMethods: ModuleMethod[] = [];
     public ObjectName: string = null;
     public BasicURL: string = null;
-    public LocationDisposition: string = null;
+    public LocationDisposition: string = "/";
     public DeleteResponseNoLogFields: string[] = [];
     public NeedsDeleteBeforeUpdate: boolean = false;
     public NeedsForceUpdate: boolean;
