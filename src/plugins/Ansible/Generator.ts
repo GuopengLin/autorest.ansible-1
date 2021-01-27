@@ -35,8 +35,7 @@ export async function processRequest(host: Host) {
         // let listMode = await host.GetValue("list");
         // let dumpModel = await host.GetValue("dump");
         // let skipDoc = await host.GetValue("skipDoc");
-        // let track2 = await host.GetValue("track2");
-        ansibleContext['track2'] = await host.GetValue("track2");
+
         ansibleContext['list'] = await host.GetValue("list");
         ansibleContext['dump'] = await host.GetValue("dump");
         ansibleContext['skipDoc'] = await host.GetValue("skipDoc");

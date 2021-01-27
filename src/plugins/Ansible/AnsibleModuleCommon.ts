@@ -473,8 +473,7 @@ export function ModuleGenerateApiCall(output: string[], indent: string, module: 
 
     if (method != null)
     {
-        if (ansibleContext['track2'] && method.IsLongRunMethod)
-            line = indent + "response = self.mgmt_client." + module.ModuleOperationName + "." + "begin_"+ToSnakeCase(methodName) + "(";
+
         indent = Indent(line);
         for (let option of method.Options)
         {

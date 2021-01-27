@@ -33,8 +33,6 @@ export function GenerateModuleSdkInfo(module: Module) : string[] {
     output.push("    from msrestazure.azure_exceptions import CloudError");
     output.push("    from " + module.PythonNamespace + " import " + module.PythonMgmtClient + "");
     output.push("    from msrestazure.azure_operation import AzureOperationPoller");
-    if (ansibleContext['track2'])
-        output.push("    from azure.core.exceptions import ResourceNotFoundError");
     output.push("    from msrest.polling import LROPoller");
     output.push("except ImportError:");
     output.push("    # This is handled in azure_rm_common");
@@ -59,9 +57,7 @@ export function GenerateModuleSdkInfo(module: Module) : string[] {
     output.push("        self.url = None");
     output.push("        self.status_code = [200]");
     output.push("");
-    output.push("        self.query_parameters = {}");
     output.push("        self.query_parameters['api-version'] = '" + module.ModuleApiVersion + "'");
-    output.push("        self.header_parameters = {}");
     output.push("        self.header_parameters['Content-Type'] = 'application/json; charset=utf-8'");
     output.push("");
     output.push("        self.mgmt_client = None");
@@ -89,10 +85,7 @@ export function GenerateModuleSdkInfo(module: Module) : string[] {
         output.push("");
         output.push("        try:");
         ModuleGenerateApiCall(output, "            ", module, m.Name);
-        if (!ansibleContext['track2'])
-            output.push("        except CloudError as e:");
-        else
-            output.push("        except ResourceNotFoundError as e:");
+        output.push("        except CloudError as exc:");
         output.push("            self.log('Could not get info for @(Model.ModuleOperationNameUpper).')");
         output.push("");
         output.push("        return response");
@@ -101,6 +94,8 @@ export function GenerateModuleSdkInfo(module: Module) : string[] {
     output.push("    def format_item(self, item):");
     output.push("        if hasattr(item, 'as_dict'):");
     output.push("            return [item.as_dict()]");
+    output.push("        elif item is None:");
+    output.push("            return None");
     output.push("        else:");
     output.push("            result = []");
     output.push("            items = list(item)");
